@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "auto_installer": {
+    "python_version": "3.11",
+    "installation_date": "2025-09-17 15:23:07",
+    "system": "Windows"
+  },
+  "launcher": {
+    "auto_setup": true,
+    "first_run": true,
+    "debug_mode": false
+  }
+}

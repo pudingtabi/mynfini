@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠🎲 MYNFINI Revolutionary AI Game Master</title>
+    <style>
+        :root {
+            /* Elegant Dark Theme - Refined Palette */
+            --primary-bg: #0d0d0d;
+            --secondary-bg: #161616;
+            --tertiary-bg: #1f1f1f;
+
+            /* Sophisticated Accents */
+            --accent-green: #10b981;
+            --accent-gold: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+
+            /* Refined Text Colors */
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+
+            /* Elegant Borders */
+            --border-color: #2a2a2a;
+            --border-highlight: #374151;
+
+            /* Glassmorphism Effects */
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+
+            /* Elevation Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #0a0a0a 50%, var(--primary-bg) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+            font-feature-settings: 'liga', 'kern';
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        /* Glassmorphism Effect for Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            margin: 20px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: var(--border-highlight);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0.5;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 200;
+            margin: 15px 0;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .system-status-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .system-status-bar:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: var(--border-highlight);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .status-item.inactive {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: var(--accent-red);
+            opacity: 0.7;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background: var(--accent-green);
+        }
+
+        .status-item.inactive .status-indicator {
+            background: var(--accent-red);
+        }
+
+        .main-interface {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-interface::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(245, 158, 11, 0.02), rgba(139, 92, 246, 0.02));
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .game-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-gold));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-highlight);
+        }
+
+        .metric-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .metric-label::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0.6;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: var(--accent-gold);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            letter-spacing: -0.01em;
+            font-feature-settings: 'tnum';
+        }
+
+        .ai-response-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            margin: 25px 0;
+            animation: fadeInUp 0.6s ease-out;
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-response-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-green), var(--accent-gold));
+            opacity: 0.8;
+        }
+
+        .narrative-text {
+            font-size: 1.15rem;
+            line-height: 1.85;
+            color: var(--text-secondary);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            white-space: pre-wrap;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+
+        .mechanical-results {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .mechanical-results h4 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .opportunity-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .opportunity-item {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid var(--accent-green);
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .input-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(16, 185, 129, 0.03), transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent-blue), #1976D2);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
+        }
+
+        .action-btn.mechanical {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+            box-shadow: 0 2px 6px rgba(156, 39, 176, 0.3);
+        }
+
+        .action-btn.narrative {
+            background: linear-gradient(135deg, var(--accent-green), #388E3C);
+            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+        }
+
+        .action-btn.save-export {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+        }
+
+        .action-btn.save-transfer {
+            background: linear-gradient(135deg, #00BCD4, #0097A7);
+            box-shadow: 0 2px 6px rgba(0, 188, 212, 0.3);
+        }
+
+        .action-btn.save-import {
+            background: linear-gradient(135deg, #E91E63, #C2185B);
+            box-shadow: 0 2px 6px rgba(233, 30, 99, 0.3);
+        }
+
+        .user-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .user-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: var(--shadow-lg), 0 0 0 3px rgba(16, 185, 129, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .user-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-purple));
+            color: var(--text-primary);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Enhanced Animations for Elegant Feel */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            animation: float 6s ease-in-out infinite;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold), var(--accent-purple), var(--accent-blue));
+            background-size: 400% 400%;
+            animation: float 6s ease-in-out infinite, gradient-shift 8s infinite alternate;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .metric-card {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .status-item {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-display {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.05));
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .error-display.show {
+            display: block;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .progress-tracker {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .step-indicator {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .step.active {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .narrative-points-info {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .game-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            :root {
+                --border-color: #ffffff;
+                --text-secondary: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 MYNFINI AI Game Master</h1>
+            <p>Revolutionary Web-Based System</p>
+        </div>
+
+        <div class="system-status-bar">
+            <h3>🔧 System Status</h3>
+            <div class="status-grid" id="system-status">
+                {% for system, status in system_status.items() %}
+                <div class="status-item {% if not status %}inactive{% endif %}">
+                    <span class="status-indicator"></span>
+                    {{ system.replace('_', ' ').title() }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="main-interface">
+            <!-- Game Metrics Display -->
+            <div class="game-metrics" id="game-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Choice-Based Experience</div>
+                    <div class="metric-value" id="cbx-total">{{ welcome_data.cbx_earned }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Session Step</div>
+                    <div class="metric-value" id="session-step">1</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Narrative Points</div>
+                    <div class="metric-value" id="narrative-points">{{ narrative_points }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">System Integration</div>
+                    <div class="metric-value" id="integration-level">Advanced</div>
+                </div>
+            </div>
+
+            <div class="progress-tracker">
+                <div class="progress-header">
+                    <h4>Session Zero Progress</h4>
+                    <div class="step-indicator">
+                        <div class="step active" id="step-1"></div>
+                        <div class="step" id="step-2"></div>
+                        <div class="step" id="step-3"></div>
+                        <div class="step" id="step-4"></div>
+                        <div class="step" id="step-5"></div>
+                    </div>
+                </div>
+                <div class="narrative-points-info">
+                    Step <span id="current-step">1</span> of 5 • Advanced Mechanics Active
+                </div>
+            </div>
+
+            <!-- AI Response Area -->
+            <div id="ai-response" class="ai-response-container">
+                {{ welcome_data.welcome_message }}
+            </div>
+
+            <!-- Control Interface -->
+            <div class="input-section">
+                <h3 style="margin-bottom: 15px; color: var(--accent-gold);">🎮 Game Controls</h3>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn mechanical" onclick="setActionType('mechanical_check')" id="mech-btn">
+                        ⚡ Perform Check
+                    </button>
+                    <button class="action-btn narrative" onclick="setActionType('narrative_points')" id="np-btn">
+                        💎 Narrative Points
+                    </button>
+                    <button class="action-btn narrative" onclick="setActionType('character_progression')" id="progress-btn">
+                        📈 Character Dev
+                    </button>
+                    <button class="action-btn" onclick="requestSystemStatus()" id="status-btn">
+                        🔧 System Status
+                    </button>
+                </div>
+
+                <!-- Save Transfer Buttons -->
+                <div class="save-transfer-buttons" style="margin-top: 15px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 10px;">📱 Cross-Device Transfer</h4>
+                    <button class="action-btn save-export" onclick="exportSaveFile()" title="Download save file">
+                        💾 Export Save
+                    </button>
+                    <button class="action-btn save-transfer" onclick="showQRModal()" title="Generate QR code for mobile">
+                        📱 QR Transfer
+                    </button>
+                    <button class="action-btn save-transfer" onclick="showBase64Modal()" title="Copy/paste save data">
+                        📋 Copy Save
+                    </button>
+                    <button class="action-btn save-import" onclick="showImportModal()" title="Import save file/data">
+                        📥 Import Save
+                    </button>
+                </div>
+
+                <!-- Input Area -->
+                <textarea id="user-input"
+                          class="user-input"
+                          placeholder="Describe your action, question, or world creation. Use 'perform check' for mechanical rolls, or 'narrative points' for dramatic moments..."
+                          rows="3"
+                          autocomplete="off"></textarea>
+
+                <div class="control-panel">
+                    <div class="loading-state" id="loading-state" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Processing through MYNFINI systems...</span>
+                    </div>
+
+                    <button id="send-btn" class="submit-btn" onclick="sendMessage()">
+                        <span>🌍 Send to AI</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error Display -->
+            <div id="error-display" class="error-display">
+                <h4>System Error</h4>
+                <p id="error-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/revolutionary_main.js') }}"></script>
+    <script src="{{ url_for('static', filename='save_transfer.js') }}"></script>
+
+    <!-- Save Transfer Functions -->
+    <script>
+        // Export save as file download
+        async function exportSaveFile() {
+            try {
+                await saveTransferManager.exportAsFile();
+            } catch (error) {
+                alert('Export failed: ' + error.message);
+            }
+        }
+
+        // Show QR code for mobile scanning
+        async function showQRModal() {
+            await saveTransferManager.showQRModal();
+        }
+
+        // Show base64 data for copy/paste
+        async function showBase64Modal() {
+            await saveTransferManager.showBase64Modal();
+        }
+
+        // Show import modal
+        async function showImportModal() {
+            await saveTransferManager.showImportModal();
+        }
+    </script>
+</body>
+</html>

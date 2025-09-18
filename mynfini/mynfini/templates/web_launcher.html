@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[DICE] MYNFINI Game Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .launcher-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .mascot {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: #667eea;
+            border-radius: 20px;
+            position: relative;
+            animation: bounce 2s infinite;
+        }
+
+        .mascot::before, .mascot::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            top: 30px;
+        }
+
+        .mascot::before { left: 25px; }
+        .mascot::after { right: 25px; }
+
+        .mascot::before, .mascot::after {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-15px,0); }
+            70% { transform: translate3d(0,-7px,0); }
+            90% { transform: translate3d(0,-2px,0); }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .progress-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 150px;
+        }
+
+        .phase-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.3),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .status-messages {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .status-message {
+            margin: 5px 0;
+            padding: 5px 0;
+            border-left: 3px solid #e9ecef;
+            padding-left: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .status-message.success { border-left-color: #28a745; color: #28a745; }
+        .status-message.error { border-left-color: #dc3545; color: #dc3545; }
+        .status-message.info { border-left-color: #17a2b8; color: #17a2b8; }
+                        .status-message.success { border-left-color: #28a745; color: #28a745; }
+        .status-message.error { border-left-color: #dc3545; color: #dc3545; }
+        .status-message.info { border-left-color: #17a2b8; color: #17a2b8; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .action-button.start-game {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .action-button.start-game:hover {
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .system-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .system-info div {
+            margin: 5px 0;
+        }
+
+        .phases {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .phase {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .phase.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .phase.completed {
+            opacity: 1;
+            color: #28a745;
+        }
+
+        .phase-emoji {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .phase-name {
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .launcher-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="launcher-container">
+        <div class="mascot"></div>
+
+        <h1>[DICE] MYNFINI Adventure Game</h1>
+        <p class="subtitle">
+            Your magical storytelling adventure starts here!<br>
+            No technical knowledge required - just click and play!
+        </p>
+
+        <div class="phases">
+            <div class="phase" id="phase-check">
+                <span class="phase-emoji">[SEARCH]</span>
+                <span class="phase-name">Check</span>
+            </div>
+            <div class="phase" id="phase-install">
+                <span class="phase-emoji">?</span>
+                <span class="phase-name">Install</span>
+            </div>
+            <div class="phase" id="phase-setup">
+                <span class="phase-emoji">[TOOLS]</span>
+                <span class="phase-name">Setup</span>
+            </div>
+            <div class="phase" id="phase-ready">
+                <span class="phase-emoji">[ROCKET]</span>
+                <span class="phase-name">Ready</span>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="phase-title" id="phase-title">Ready to Start!</div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="status-messages" id="status-messages">
+                <div class="status-message info">
+                    ? Click the button below to start your adventure!
+                </div>
+            </div>
+        </div>
+
+        <div class="system-info" id="system-info">
+            <div>Checking your system... [MOBILE]</div>
+        </div>
+
+        <button class="action-button" id="start-install" onclick="startInstallation()">
+            [ROCKET] Start My Adventure!
+        </button>
+
+        <button class="action-button start-game" id="start-game" onclick="startGame()" style="display: none;">
+            [GAME] Play Now!
+        </button>
+    </div>
+
+    <script>
+        let isInstalling = false;
+        const apiBase = '';
+
+        // System info
+        async function getSystemInfo() {
+            try {
+                const response = await fetch(`${apiBase}/api/system-info`);
+                const data = await response.json();
+
+                const systemInfo = document.getElementById('system-info');
+                systemInfo.innerHTML = `
+                    <div>? System: ${data.os} ${data.os_version}</div>
+                    <div>? Python: ${data.python_version}</div>
+                    <div>? Free Space: ${data.free_space_gb.toFixed(1)} GB</div>
+                    <div>[CHECK] Game Ready: ${data.game_ready ? 'Yes!' : 'Installing...'}</div>
+                `;
+            } catch (error) {
+                console.error('Could not get system info:', error);
+            }
+        }
+
+        // Installation
+        async function startInstallation() {
+            if (isInstalling) return;
+
+            isInstalling = true;
+            const button = document.getElementById('start-install');
+            button.disabled = true;
+            button.textContent = '[TOOLS] Installing...';
+
+            addSystemMessage('[ROCKET] Starting installation...', 'info');
+            updatePhase('check', 'Checking Your System');
+
+            try {
+                const response = await fetch(`${apiBase}/api/start`);
+                if (!response.ok) throw new Error('Could not start installation');
+
+                // Start monitoring progress
+                monitorProgress();
+
+            } catch (error) {
+                console.error('Installation error:', error);
+                addSystemMessage('[CROSS] Could not start installation', 'error');
+                resetButton();
+            }
+        }
+
+        // Progress monitoring
+        async function monitorProgress() {
+            try {
+                const response = await fetch(`${apiBase}/api/status`);
+                if (!response.ok) throw new Error('Could not get status');
+
+                const data = await response.json();
+
+                // Update UI
+                updateUIBasedOnStatus(data);
+
+                // Continue monitoring if installation is running
+                if (data.has_running_installation || !data.complete) {
+                    setTimeout(monitorProgress, 500);
+                } else {
+                    installationComplete(data.phases === 'ready');
+                }
+
+            } catch (error) {
+                console.error('Progress monitoring error:', error);
+                setTimeout(monitorProgress, 1000); // Retry
+            }
+        }
+
+        function updateUIBasedOnStatus(data) {
+            // Update phase
+            updatePhaseUI(data.phase);
+
+            // Update messages
+            const messagesDiv = document.getElementById('status-messages');
+            messagesDiv.innerHTML = '';
+
+            data.messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `status-message ${msg.level}`;
+                msgDiv.textContent = `[${msg.time}] ${msg.message}`;
+                messagesDiv.appendChild(msgDiv);
+            });
+
+            // Scroll to bottom
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function updatePhaseUI(phase) {
+            // Hide all phases
+            document.querySelectorAll('.phase').forEach(p => p.classList.remove('active', 'completed'));
+
+            // Update based on current phase
+            const phaseMap = {
+                'checking': 'check',
+                'downloading': 'check',
+                'installing': 'install',
+                'configuring': 'setup',
+                'ready': 'ready'
+            };
+
+            if (phaseMap[phase]) {
+                const currentPhase = document.getElementById(`phase-${phaseMap[phase]}`);
+                currentPhase.classList.add('active');
+
+                // Mark previous phases as completed
+                const allPhases = ['check', 'install', 'setup', 'ready'];
+                const currentIndex = allPhases.indexOf(phaseMap[phase]);
+                for (let i = 0; i < currentIndex; i++) {
+                    document.getElementById(`phase-${allPhases[i]}`).classList.add('completed');
+                }
+            }
+        }
+
+        function updatePhase(phase, title) {
+            const phaseTitle = document.getElementById('phase-title');
+            phaseTitle.textContent = title;
+            updatePhaseUI(phase);
+        }
+
+        function updateProgress(percentage) {
+            const progressFill = document.getElementById('progress-fill');
+            progressFill.style.width = percentage + '%';
+        }
+
+        function addSystemMessage(message, level = 'info') {
+            const messagesDiv = document.getElementById('status-messages');
+            const timestamp = new Date().toLocaleTimeString();
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `status-message ${level}`;
+            msgDiv.textContent = `[${timestamp}] ${message}`;
+            msgDiv.style.animation = 'fadeIn 0.5s ease';
+            messagesDiv.appendChild(msgDiv);
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function installationComplete(success) {
+            isInstalling = false;
+
+            if (success) {
+                updatePhase('ready', 'Ready to Play!');
+                addSystemMessage('[CONFETTI] Installation complete! Your adventure is ready!', 'success');
+
+                // Show start game button
+                document.getElementById('start-install').style.display = 'none';
+                document.getElementById('start-game').style.display = 'inline-block';
+
+                updateProgress(100);
+            } else {
+                addSystemMessage('[WARNING] Installation had some issues, but your game might still work!', 'error');
+                resetButton();
+            }
+        }
+
+        function resetButton() {
+            const button = document.getElementById('start-install');
+            button.disabled = false;
+            button.textContent = '[ROCKET] Restart Installation';
+            isInstalling = false;
+        }
+
+        // Game start
+        async function startGame() {
+            try {
+                addSystemMessage('[GAME] Starting your adventure...', 'info');
+
+                const response = await fetch(`${apiBase}/api/start-game`);
+                if (!response.ok) throw new Error('Could not start game');
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    addSystemMessage('[STAR] Game started! Opening in your browser...', 'success');
+
+                    // Update button
+                    const button = document.getElementById('start-game');
+                    button.textContent = '[GAME] Game Running!';
+                    button.disabled = true;
+                } else {
+                    addSystemMessage(`[CROSS] Could not start game: ${data.error}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Game start error:', error);
+                addSystemMessage('[CROSS] Could not start your adventure', 'error');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            getSystemInfo();
+
+            // Check if game is already ready
+            try {
+                const response = await fetch(`${apiBase}/api/system-info`);
+                const data = await response.json();
+
+                if (data.game_ready) {
+                    updatePhase('ready', 'Ready to Play!');
+                    updateProgress(100);
+                    document.getElementById('start-install').style.display = 'none';
+                    document.getElementById('start-game').style.display = 'inline-block';
+                }
+            } catch (error) {
+                console.error('Could not check game status:', error);
+            }
+        });
+    </script>
+</body>
+</html>

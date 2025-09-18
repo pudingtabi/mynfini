@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MYNFINI Setup</title>
+    <style>
+        :root {
+            --primary-bg: #0d0d0d;
+            --secondary-bg: #161616;
+            --accent-green: #10b981;
+            --accent-gold: #f59e0b;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #2a2a2a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #0a0a0a 50%, var(--primary-bg) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.7;
+            padding: 50px 20px;
+        }
+
+        .setup-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .setup-title {
+            color: var(--accent-gold);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+
+        .setup-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .setup-message {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: var(--accent-red);
+            font-weight: 500;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .setup-steps {
+            text-align: left;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .setup-steps h3 {
+            color: var(--accent-green);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .step-number {
+            background: var(--accent-green);
+            color: var(--primary-bg);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            text-align: left;
+        }
+
+        .step-content h4 {
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .note {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--accent-gold);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            color: var(--primary-bg);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .setup-container {
+                padding: 0 15px;
+            }
+
+            .setup-title {
+                font-size: 2rem;
+            }
+
+            .setup-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1 class="setup-title">MYNFINI Setup Required</h1>
+        <div class="setup-card">
+            <div class="setup-message">
+                <p>Almost there! To unlock the full power of MYNFINI, you need to configure an AI provider.</p>
+                <div class="error">{{ error }}</div>
+                <p>Don't worry - this is easy and only takes a few minutes.</p>
+            </div>
+
+            <div class="setup-steps">
+                <h3>🔧 Setup Instructions</h3>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Get an API Key</h4>
+                        <p>Sign up for an AI provider service like Anthropic, OpenAI, or use a local model. Most have free tiers to get started.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Set Environment Variables</h4>
+                        <p>Create a <code>.env</code> file in the MYNFINI folder with your API key:</p>
+                        <p><code>ANTHROPIC_API_KEY=your-key-here</code></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Restart MYNFINI</h4>
+                        <p>Close and reopen the application. You'll be taken to the elegant interface with 8/8 systems active!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note">
+                <p><strong>💡 Pro Tip:</strong> You can also use free local models or synthetic.new for zero-cost gameplay. Check the documentation for alternative setup options!</p>
+            </div>
+
+            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh Page After Setup</button>
+        </div>
+    </div>
+</body>
+</html>

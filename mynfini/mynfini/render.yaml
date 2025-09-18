@@ -1,0 +1,50 @@
+# MYNFINI Render Deployment Configuration
+# Fixes the requirements.txt "Could not open requirements file" error
+# Configures proper working directory for web deployment
+
+services:
+  - type: web
+    name: mynfini-ttrpg
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT web_app:app"
+
+    envVars:
+      # Core synthetic.new API Configuration
+      - key: SYNTHETIC_NEW_API_KEY
+        sync: false  # Set in Render dashboard
+
+      - key: KIMI_K2_API_KEY
+        sync: false  # Set in Render dashboard
+
+      # Web Application Security
+      - key: SECRET_KEY
+        sync: false  # Set strong key in Render dashboard
+
+      # Production Settings
+      - key: DEBUG
+        value: "false"
+
+      # Provider Priority (optional)
+      - key: AI_PROVIDERS
+        value: "synthetic_new,kimi_k2"
+
+      # Base URL Configuration
+      - key: SYNTHETIC_NEW_URL
+        value: "https://api.synthetic.new/v1"
+
+      - key: KIMI_K2_URL
+        value: "https://api.synthetic.new/v1"
+
+      # Optional: Additional AI Providers
+      - key: ANTHROPIC_API_KEY
+        sync: false  # Optional fallback
+
+      - key: OPENAI_API_KEY
+        sync: false  # Optional fallback
+
+    # Working directory fix for Render deployment
+    workingDir: /
+
+    # Health check configuration
+    healthCheckPath: /

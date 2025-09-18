@@ -1,0 +1,143 @@
+# MYNFINI AI Game Master - Render Static Site Configuration
+# Optimized for React + Vite PWA deployment
+
+services:
+  # Frontend Static Site - React Application
+  - type: web
+    name: mynfini-frontend
+    env: static
+    buildCommand: npm run build:render
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+
+    # Environment Variables - AI Provider Configuration
+    envVars:
+      - key: VITE_ENVIRONMENT
+        value: production
+      - key: VITE_APP_VERSION
+        value: "1.0.0"
+      - key: VITE_API_BASE_URL
+        value: https://mynfini-api.onrender.com
+      - key: VITE_API_TIMEOUT
+        value: "30000"
+      - key: VITE_MAX_CONCURRENT_REQUESTS
+        value: "5"
+      - key: VITE_RETRY_ATTEMPTS
+        value: "3"
+      - key: VITE_CACHE_DURATION
+        value: "3600"
+
+      # AI Provider API Keys (User will configure these in Render dashboard)
+      - key: VITE_OPENAI_API_KEY
+        sync: false
+      - key: VITE_ANTHROPIC_API_KEY
+        sync: false
+      - key: VITE_GROQ_API_KEY
+        sync: false
+      - key: VITE_HUGGINGFACE_API_KEY
+        sync: false
+      - key: VITE_ELEVENLABS_API_KEY
+        sync: false
+
+      # CORS and Security
+      - key: VITE_CORS_ORIGIN
+        value: https://mynfini-frontend.onrender.com
+      - key: VITE_ENABLE_ANALYTICS
+        value: "true"
+      - key: VITE_ENABLE_ERROR_TRACKING
+        value: "true"
+
+      # Feature Flags
+      - key: VITE_ENABLE_OFFLINE_MODE
+        value: "true"
+      - key: VITE_ENABLE_PWA
+        value: "true"
+      - key: VITE_ENABLE_PUSH_NOTIFICATIONS
+        value: "false"
+
+    # Security Headers - Production Hardening
+    headers:
+      # Prevent clickjacking attacks
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+
+      # Prevent MIME type sniffing
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+
+      # Cross-origin security
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+
+      # Strict Origin Policy
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+
+      # Content Security Policy - Optimized for External APIs
+      - path: /*
+        name: Content-Security-Policy
+        value: |
+          default-src 'self';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com;
+          style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+          img-src 'self' data: https: blob:;
+          connect-src 'self' https://api.openai.com https://api.anthropic.com https://api.groq.com wss://*.onrender.com wss://*.pusher.com;
+          font-src 'self' data: https://fonts.gstatic.com;
+          object-src 'none';
+          base-uri 'self';
+          form-action 'self';
+
+      # X-Permitted-Cross-Domain-Policies
+      - path: /*
+        name: X-Permitted-Cross-Domain-Policies
+        value: none
+
+      # Cache-Control for Static Assets
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+      # CORS Headers for API Integration
+      - path: /api/*
+        name: Access-Control-Allow-Origin
+        value: https://mynfini-frontend.onrender.com
+
+      - path: /api/*
+        name: Access-Control-Allow-Methods
+        value: GET, POST, PUT, DELETE, OPTIONS
+
+      - path: /api/*
+        name: Access-Control-Allow-Headers
+        value: Content-Type, Authorization, X-Session-ID, X-Request-ID
+
+    # Routes - SPA Configuration
+    routes:
+      - type: rewrite
+        source: /
+        destination: /index.html
+      - type: rewrite
+        source: /play/*
+        destination: /index.html
+      - type: rewrite
+        source: /world/*
+        destination: /index.html
+      - type: rewrite
+        source: /settings/*
+        destination: /index.html
+
+# Optional: Backend Service Configuration (if needed in future)
+# services:
+#   - type: web
+#     name: mynfini-api
+#     env: python
+#     buildCommand: pip install -r requirements.txt
+#     startCommand: gunicorn app:app -b 0.0.0.0:$PORT
+#     envVars:
+#       - key: PYTHON_VERSION
+#         value: "3.11"
+#       - key: FLASK_ENV
+#         value: production

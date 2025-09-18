@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /b C:UsersmrcpeOneDriveprojectmynfini)",
+      "Bash(dir C:UsersmrcpeOneDriveprojectmynfini)",
+      "Bash(dir)",
+      "Bash(tree . /F)",
+      "Bash(grep -E \"\\.(env|yml|yaml|cfg|ini|toml)$\")",
+      "Read(//c/Users/mrcpe/OneDrive/project/mynfini_old/**)",
+      "Bash(npx create-react-app mynfini-solo-world-weaver --template typescript)",
+      "Bash(cat package.json)",
+      "Bash(cat mynfini-solo-world-weaver/package.json)",
+      "Bash(npm create vite@latest . --template react-ts)",
+      "Bash(mkdir -p src/{components/{atoms,molecules,organisms,layouts,pages},hooks,utils,services,types,contexts,assets/{images,styles,fonts},constants,store} public)",
+      "Bash(dir /s)",
+      "Bash(tree /F)",
+      "Bash(rm -rf public src)",
+      "Bash(npx create-react-app . --template typescript)",
+      "Bash(npm init -y)",
+      "Bash(npm install vite @vitejs/plugin-react typescript @types/react @types/react-dom)",
+      "Bash(npm install @tanstack/react-query axios react-hook-form zustand styled-components @types/styled-components framer-motion uuid @types/uuid immer zod)",
+      "Bash(npm run build)",
+      "Bash(cat \"C:UsersmrcpeOneDriveprojectmynfinisrctypesapi.ts\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

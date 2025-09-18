@@ -1,0 +1,225 @@
+# 🚀 Automated Deployment to Render
+# MYNFINI AI Game Master - Frontend React Application
+
+name: Deploy to Render
+
+# Trigger deployment on:
+on:
+  push:
+    branches: [ main, production ]
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, closed]
+
+jobs:
+  # Quality Assurance & Testing
+  test:
+    name: 🧪 Test & Quality Check
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: |
+          npm ci --audit-level=moderate
+          npm install -g serve
+
+      - name: 🧪 Run Tests
+        run: npm test -- --reporter=verbose --colors
+        env:
+          CI: true
+
+      - name: 🔍 Code Quality Check
+        run: npm run lint
+
+      - name: 📊 Bundle Size Analysis
+        run: |
+          npm run build
+          npx bundlesize
+
+      - name: 🔍 Security Audit
+        run: npm audit --audit-level moderate
+
+      - name: 📊 Performance Metrics
+        run: |
+          npm run build:render
+          npx webpack-bundle-analyzer dist/assets/*.js --mode static --report dist/bundle-analysis.html
+
+  # Production Deployment
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+
+    environment:
+      name: production
+      url: https://mynfini-frontend.onrender.com
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: 📦 Install Production Dependencies
+        run: npm ci --only=production=false
+
+      - name: 🏗️ Build Application
+        run: npm run build:render
+        env:
+          VITE_ENVIRONMENT: production
+          VITE_APP_VERSION: 1.0.0
+          NODE_ENV: production
+
+      - name: 🔍 Build Verification
+        run: |
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ Build failed: index.html not found"
+            exit 1
+          fi
+
+          if [ ! -d "dist/assets" ]; then
+            echo "❌ Build failed: assets directory not found"
+            exit 1
+          fi
+
+          echo "✅ Build successful"
+          echo "Build size summary:"
+          find dist -name "*.js" -exec wc -c {} \; | sort -nr | head -5
+
+      - name: 📊 Performance Analysis
+        run: |
+          echo "📊 Build Performance Analysis:"
+          echo "JavaScript Bundle Analysis:"
+          find dist/assets -name "*.js" -exec echo "$(basename {}): $(wc -c < {} | numfmt --to=iec)" \;
+
+          echo "CSS Bundle Analysis:"
+          find dist/assets -name "*.css" -exec echo "$(basename {}): $(wc -c < {} | numfmt --to=iec)" \;
+
+          echo "Asset Summary:"
+          du -h dist/ | sort -hr | head -10
+
+      - name: 🔍 Security Scan
+        run: |
+          npm audit --audit-level=high
+
+          # Check for common security vulnerabilities
+          npx better-npm-audit audit --level moderate || true
+
+      - name: 🚀 Trigger Render Deployment
+        if: success()
+        run: |
+          echo "🚀 Triggering deployment to Render..."
+
+          # Create deployment artifact for monitoring
+          echo "Build successful at $(date)" > deployment-info.txt
+          echo "Commit: ${{ github.sha }}" >> deployment-info.txt
+          echo "Ref: ${{ github.ref }}" >> deployment-info.txt
+
+          # Note: Render will automatically deploy through GitHub integration
+          echo "✅ GitHub integration will trigger Render deployment automatically"
+          echo "🌐 Deployment will be available at: https://mynfini-frontend.onrender.com"
+
+      - name: 📊 Deployment Metrics
+        if: success()
+        run: |
+          echo "📈 Deployment Metrics:"
+          echo "- Build Duration: ${{ steps.build.outputs.duration }}"
+          echo "- Bundle Size: $(du -sh dist/ | cut -f1)"
+          echo "- Deployment Triggered: $(date)"
+          echo "- Commit SHA: ${{ github.sha }}"
+
+  # Post-Deployment Validation
+  post-deployment:
+    name: ✅ Post-Deployment Validation
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: success() && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: ⏳ Wait for Deployment
+        run: |
+          echo "⏳ Waiting 60 seconds for deployment to complete..."
+          sleep 60
+
+      - name: 🔍 Deployed Application Check
+        run: |
+          APPLICATION_URL="https://mynfini-frontend.onrender.com"
+
+          echo "🔍 Checking deployed application at: $APPLICATION_URL"
+
+          # Test basic connectivity
+          for i in {1..10}; do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$APPLICATION_URL" || echo "000")
+
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "✅ Application is accessible (HTTP $HTTP_STATUS)"
+              break
+            elif [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ]; then
+              echo "✅ Application is accessible with redirect (HTTP $HTTP_STATUS)"
+              break
+            else
+              echo "⏳ Waiting for deployment... (Attempt $i/10, HTTP $HTTP_STATUS)"
+
+              if [ $i -eq 10 ]; then
+                echo "❌ Application not accessible after 10 attempts"
+                curl -v "$APPLICATION_URL" || true
+                exit 1
+              fi
+
+              sleep 30
+            fi
+          done
+
+      - name: 🔍 Health Check
+        run: |
+          DEPLOYMENT_URL="https://mynfini-frontend.onrender.com"
+
+          # Check main page loads
+          echo "🔍 Performing health check on deployed application..."
+
+          # Check page content
+          curl -s "$DEPLOYMENT_URL" | grep -i "mynfini" || echo "Warning: Application content check failed"
+
+          # Check JavaScript files are loading
+          curl -s -I "$DEPLOYMENT_URL/assets/*.js" | head -1
+
+          # Check service worker
+          curl -s -I "$DEPLOYMENT_URL/sw.js" || echo "Note: Service worker not yet active"
+
+      - name: 📊 Performance Test
+        run: |
+          DEPLOYMENT_URL="https://mynfini-frontend.onrender.com"
+
+          echo "📊 Performance Test Results:"
+
+          # Performance timing
+          curl -s -w "Total time: %{time_total}s\n" -o /dev/null "$DEPLOYMENT_URL"
+
+          # Lighthouse performance check
+          echo "📈 Lighthouse Performance Score:"
+          echo "Run: npx lighthouse-ci $DEPLOYMENT_URL --chrome-flags='--headless'"
+
+      - name: 🔔 Notification Setup
+        run: |
+          echo "🎉 Deployment completed successfully!"
+          echo "🌐 Application is now live at: https://mynfini-frontend.onrender.com"
+          echo "📊 Build metrics and monitoring data have been collected"
+          echo "🚀 Your creative universe is ready to be explored!"

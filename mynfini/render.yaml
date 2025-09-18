@@ -1,12 +1,13 @@
 # MYNFINI Render Deployment Configuration
-# Fixed for proper working directory navigation
+# Fixes the requirements.txt "Could not open requirements file" error
+# Configures proper working directory for web deployment
 
 services:
   - type: web
     name: mynfini-ttrpg
     env: python
-    buildCommand: "cd mynfini-web && pip install -r requirements.txt"
-    startCommand: "cd mynfini-web && gunicorn --bind 0.0.0.0:$PORT web_app:app"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT web_app:app"
 
     envVars:
       # Core synthetic.new API Configuration

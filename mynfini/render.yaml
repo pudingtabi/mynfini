@@ -5,8 +5,8 @@ services:
   - type: web
     name: mynfini-ttrpg
     env: python
-    buildCommand: "cd mynfini/mynfini-web && pip install -r requirements.txt"
-    startCommand: "cd mynfini/mynfini-web && gunicorn --bind 0.0.0.0:$PORT web_app:app"
+    buildCommand: "cd mynfini-web && pip install -r requirements.txt"
+    startCommand: "cd mynfini-web && gunicorn --bind 0.0.0.0:$PORT web_app:app"
 
     envVars:
       # Core synthetic.new API Configuration
